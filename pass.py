@@ -2,5 +2,5 @@ import csvparser
 
 
 fileName = "file.csv"
-para = ""
-csvparser.load(fileName,para)
+para = "student=True"
+csvparser.load(fileName, para)

@@ -1,6 +1,6 @@
-import beta
+import csvparser
 
 
 fileName = "file.csv"
 para = ""
-beta.load(fileName,para)
+csvparser.load(fileName,para)

@@ -1,4 +1,4 @@
-
+import re
 
 #TODO: display errors when too few parameters
 
@@ -10,76 +10,75 @@ def load(fileName, para):
 
         # NOTE: Spec does not require headers
 
+        table = []
 
         for line in csvFile:
+            print("processing line: ", line)
 
-            if line.__contains__("\""):
-                print("line contains double quotes")
+            if line != "\n":
 
-                processQuotedLine(line)
+                if line.__contains__("\""):
+                    table.append(process_quoted_line(line))
 
+                else:
+                    row = line[:-1].split(",")  # the -1 removes the ending line break
+                    table.append(row)
 
-            else:
-                print("not quotes in line")
-
-                rows = line.split(",")
-                print(rows)
-                print(rows.__len__())
-
-
-
-
-
-
-
-
+    print(table)
     # TODO: check column length after loading
 
 
+def process_quoted_line(line):
+    row = []
 
-    print("para = ", para)
+    while line.__len__() != 0:
 
+        # except for the beginning, the line here should start with a comma
+        if line[0] == ",":
+            flag = 1  # add padding for the beginning comma
+        else:
+            flag = 0  # dont add padding
 
+        # check if current field is not quoted
+        # this also takes care of empty fields (a la ,,)
+        comma_pos = line[flag:].find(',').__pos__()
+        if not line[:comma_pos].__contains__('"'):
 
+            # if last field then dont look for last comma
+            if comma_pos == -1:
+                row.append(line[flag:])
+                line = ''
+            else:
+                row.append(line[flag: comma_pos + 1])
+                line = line[comma_pos + flag:]
 
-    # start parsing lines
-    # make sure to NOT trim spaces out
-    # make sure to
-    # count lines
-    # check for quotes as per spec
-    # check for escaped quotes as per spec
+        else:
 
+            if line[0] == ",":
+                line = line[1:]
 
+            # check for empty quoted string "",
+            if line[0:3] == '"",':
+                row.append('')
+                line = line[3:]
 
-    # TODO: error checking
-    #   too many or too few columns (commas)
-    #   make sure windows and unix style new lines are accepted (new line delimination)
+            else:
+                # find the location of the next quote that is not escaped (not two double quotes - "")
+                match = re.search('(?<!")"(?!")', line[1:]).start()
 
+                temp_field = line[:match + 2]
 
-# Check if each line has the same number of columns by ______
-# def checkValidColumnLength(csvFile):
-    # by checking number of commas in each line?
-    #  but this might ignore escaped commas
+                # un-escape quotes
+                temp_field = re.sub('""', '"', temp_field)
+                print(temp_field)
 
-    # OR
+                # append and remove beginning and ending quotes
+                row.append(temp_field[1:-1])
 
-def processQuotedLine(line):
-    while line.__len__() > 0:
+                # remove field from line
+                line = line[match + 3:]
 
-        # field starts with
-        if line[0] == "\"":
-            next_quote = line.find("\"")
-            print(next_quote,1)
-
-            # find next quote
-
-            # check if escaped quote
-            # if yes, then find next and get rid of the escaped ones recursively then save field
-            # if no then save field
-
-        # detect valid quotes
-        # detect escaped quotes and replace
-        # detect escaped commas
+    return row
 
 
 def logError(str):

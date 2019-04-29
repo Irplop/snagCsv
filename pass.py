@@ -1,6 +1,11 @@
 import csvparser
+import sys
 
 
-fileName = "file.csv"
-para = "student=True"
-csvparser.load(fileName, para)
+
+print("===",sys.argv[1])
+# fileName = "testFiles/edgeCases.csv"
+# para = ["student=True"]
+# csvparser.load(fileName, "LastName=Gold", "LastName=Tinuviel", "metadata=", "metadata=tolkien")
+
+csvparser.load(sys.argv[1], *sys.argv[2:])

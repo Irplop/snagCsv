@@ -3,7 +3,9 @@ import sys
 
 
 
-print("===",sys.argv[1])
+# print("===",sys.argv[1])
+
+
 # fileName = "testFiles/edgeCases.csv"
 # para = ["student=True"]
 # csvparser.load(fileName, "LastName=Gold", "LastName=Tinuviel", "metadata=", "metadata=tolkien")
